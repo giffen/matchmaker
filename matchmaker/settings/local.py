@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'stripe',
     'registration',
     'south',
+    'profiles',
 )
 
 MIDDLEWARE_CLASSES = (
