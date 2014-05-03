@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     #url(r'^$', 'profiles.views.home', name='home'),
     url(r'^$', 'profiles.views.all', name='all'),
     url(r'^members/(?P<username>\w+)/$', 'profiles.views.single_user', name='single_user'),
+    (r'^accounts/', include('registration.backends.default.urls')),
 
 )
 
