@@ -31,6 +31,14 @@ def edit_profile(request):
 
 	user_picture_form = UserPictureForm(request.POST or None, prefix='pic', instance=picture)
 	
+	addresses = Address.objects.filter(user=user)
+	AddressFormset = modelformset_factory(Address, form=AddressForm, extra=1)
+	formset_a = AddressFormset(request.POST or None, queryset=addresses)
+
+	jobs = Job.objects.filter(user=user)
+	JobFormset = modelformset_factory(Job, form=JobForm, extra=1)
+	formset_j = JobFormset(request.POST or None, queryset=jobs)
+
 	if user_picture_form.is_valid():
 		form3 =  user_picture_form.save(commit=False)
 		form3.save()
