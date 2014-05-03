@@ -1,5 +1,6 @@
 from django.shortcuts import render, Http404
 from django.contrib.auth.models import User
+from django.forms.models import modelformset_factory
 
 from .models import Address, Job, UserPicture 
 from .forms import AddressForm, JobForm, UserPictureForm
@@ -26,20 +27,34 @@ def single_user(request, username):
 
 def edit_profile(request):
 	user = request.user #grabs the logged in user
-	address = Address.objects.get(user=user)
-	job = Job.objects.get(user=user)
 	picture = UserPicture.objects.get(user=user)
 
-	address_form = AddressForm(request.POST or None, prefix='address', instance=address)
-	job_form = JobForm(request.POST or None, prefix='job', instance=job)
 	user_picture_form = UserPictureForm(request.POST or None, prefix='pic', instance=picture)
 	
-	if address_form.is_valid() and job_form.is_valid() and user_picture_form.is_valid():
-		form1 =  address_form.save(commit=False)
-		form1.save()
-		form2 =  job_form.save(commit=False)
-		form2.save()
+	if user_picture_form.is_valid():
 		form3 =  user_picture_form.save(commit=False)
 		form3.save()
 
-	return render(request, 'profiles/edit_profile.html', locals())	
+	return render(request, 'profiles/edit_profile.html', locals())
+
+def edit_address(request):
+	user = request.user #grabs the logged in user
+	addresses = Address.objects.filter(user=user)
+	AddressFormset = modelformset_factory(Address, form=AddressForm, extra=1)
+	formset_a = AddressFormset(request.POST or None, queryset=addresses)
+
+	if formset_a.is_valid():
+		pass
+
+	return render(request, 'profiles/edit_address.html', locals())
+
+def edit_job(request):
+	user = request.user #grabs the logged in user
+	jobs = Job.objects.filter(user=user)
+	JobFormset = modelformset_factory(Job, form=JobForm, extra=1)
+	formset_j = JobFormset(request.POST or None, queryset=jobs)
+	
+	if formset_j.is_valid():
+		pass
+
+	return render(request, 'profiles/edit_jobs.html', locals())	
