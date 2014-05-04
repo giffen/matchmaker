@@ -11,7 +11,9 @@ urlpatterns = patterns('',
     url(r'^$', 'profiles.views.home', name='home'),
     url(r'^members/$', 'profiles.views.all', name='all'),
     url(r'^members/(?P<username>\w+)/$', 'profiles.views.single_user', name='single_user'),
-    url(r'^members/edit$', 'profiles.views.edit_profile', name='edit_profile'),
+    url(r'^edit/$', 'profiles.views.edit_profile', name='edit_profile'),
+    (r'^edit/jobs$', 'profiles.views.edit_jobs'),
+    (r'^edit/locations$', 'profiles.views.edit_locations'),
 
 )
 
