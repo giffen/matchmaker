@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'registration',
     'south',
     'profiles',
+    'questions',
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7
