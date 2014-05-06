@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Question, Answer
+from .models import Question, Answer, UserAnswer
 
 class QuestionAdmin(admin.ModelAdmin):
 	class Meta:
@@ -14,4 +14,11 @@ class AnswerAdmin(admin.ModelAdmin):
 		model = Answer
 
 admin.site.register(Answer, AnswerAdmin)
+
+
+class UserAnswerAdmin(admin.ModelAdmin):
+	class Meta:
+		model = UserAnswer
+
+admin.site.register(UserAnswer, UserAnswerAdmin)
 

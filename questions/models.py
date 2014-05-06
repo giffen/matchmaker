@@ -19,3 +19,14 @@ class Answer(models.Model):
 
 	def __unicode__(self):
 		return self.answer
+
+class UserAnswer(models.Model):
+	user = models.ForeignKey(User)
+	question = models.ForeignKey(Question)
+	answer = models.ForeignKey(Answer, null=True, blank=True)
+	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+	def __unicode__(self):
+		return self.answer.answer
+	
