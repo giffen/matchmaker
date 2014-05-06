@@ -5,9 +5,15 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Question, Answer, UserAnswer
 
+#Mandatory == 300
+#Very Important == 100
+#Somewhat Important == 20
+#Not Important == 0
+
 def all_questions(request):
 	questions_all = Question.objects.all()
 	paginator = Paginator(questions_all, 1)
+	important_levels = ['Mandatory', 'Very Important', 'Somewhat Important', 'Not Important']
 
 	page = request.GET.get('page')
 	try:
@@ -23,6 +29,7 @@ def all_questions(request):
 	if request.method == "POST":
 		question_id =  request.POST['question_id']
 		answer_form =  request.POST['answer']
+		importance_level =  request.POST['importance_level']
 
 		user = User.objects.get(username=request.user)
 		question = Question.objects.get(id = question_id)
@@ -30,6 +37,7 @@ def all_questions(request):
 
 		answered, created = UserAnswer.objects.get_or_create(user=user, question=question)
 		answered.answer = answer
+		answered.importance_level = importance_level
 		answered.save()
 
 		messages.success(request, 'Answer saved.')

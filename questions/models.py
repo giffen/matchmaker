@@ -24,6 +24,7 @@ class UserAnswer(models.Model):
 	user = models.ForeignKey(User)
 	question = models.ForeignKey(Question)
 	answer = models.ForeignKey(Answer, null=True, blank=True)
+	importance_level = models.CharField(max_length=20, null=True, blank=True, default="Somewhat Important")
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
