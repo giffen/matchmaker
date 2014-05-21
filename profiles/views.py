@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from django.forms.models import modelformset_factory
 from django.shortcuts import render, Http404, HttpResponseRedirect
 
+from questions.matching import points, match_percentage
 from .models import Address, Job, UserPicture 
 from .forms import AddressForm, JobForm, UserPictureForm
+
 
 def home(request):
 	return render(request, 'home.html', locals())
@@ -24,6 +26,7 @@ def single_user(request, username):
 	except:
 		raise Http404
 	
+	match = round(match_percentage(request.user, single_user), 4) * 100
 	return render(request, 'profiles/single_user.html', locals())
 
 def edit_profile(request):
