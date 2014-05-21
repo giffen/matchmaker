@@ -4,6 +4,7 @@ from django.forms.models import modelformset_factory
 from django.shortcuts import render, Http404, HttpResponseRedirect
 
 from questions.matching import points, match_percentage
+from matches.models import Match
 from .models import Address, Job, UserPicture 
 from .forms import AddressForm, JobForm, UserPictureForm
 
@@ -25,8 +26,11 @@ def single_user(request, username):
 			single_user = user
 	except:
 		raise Http404
-	
-	match = round(match_percentage(request.user, single_user), 4) * 100
+	set_match, created = Match.objects.get_or_create(from_user=request.user, to_user=single_user)
+	set_match.percent = round(match_percentage(request.user, single_user), 4)
+	set_match.save()
+
+	match = set_match.percent * 100
 	return render(request, 'profiles/single_user.html', locals())
 
 def edit_profile(request):

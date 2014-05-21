@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'south',
     'profiles',
     'questions',
+    'matches',
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7
