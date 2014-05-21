@@ -15,7 +15,8 @@ def home(request):
 def all(request):
 
 	users = User.objects.filter(is_active=True)
-
+	matches = Match.objects.user_matches(request.user)
+	
 	return render(request, 'profiles/all.html', locals())
 
 def single_user(request, username):
