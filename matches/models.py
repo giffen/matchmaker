@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from profiles.models import Job
+
 class MatchManager(models.Manager):
 	def user_matches(self, user):
 		matches = []
@@ -56,3 +58,11 @@ class Match(models.Model):
 
 	def __unicode__(self):
 		return self.percent
+
+class JobMatch(models.Model):
+	user = models.ForeignKey(User)
+	job = models.ForeignKey(Job, null=True, blank=True)
+	show = models.BooleanField(default=True)
+
+	def __unicode__(self):
+		return self.job.position

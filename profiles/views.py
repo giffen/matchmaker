@@ -4,7 +4,7 @@ from django.forms.models import modelformset_factory
 from django.shortcuts import render, Http404, HttpResponseRedirect
 
 from questions.matching import points, match_percentage
-from matches.models import Match
+from matches.models import Match, JobMatch
 from .models import Address, Job, UserPicture 
 from .forms import AddressForm, JobForm, UserPictureForm
 
@@ -34,6 +34,13 @@ def single_user(request, username):
 	set_match.percent = round(match_percentage(request.user, single_user), 4)
 	set_match.good_match = Match.objects.good_match(request.user, single_user)
 	set_match.save()
+
+	if set_match.good_match:
+		single_user_jobs = Job.objects.filter(user=single_user)
+		if len(single_user_jobs) > 0:
+			for job in single_user_jobs:
+				job_match, created = JobMatch.objects.get_or_create(user=request.user, job=job)
+				job_match.save()
 
 	match = set_match.percent * 100
 	return render(request, 'profiles/single_user.html', locals())
