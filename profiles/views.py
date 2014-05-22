@@ -15,8 +15,11 @@ def home(request):
 def all(request):
 
 	users = User.objects.filter(is_active=True)
-	matches = Match.objects.user_matches(request.user)
-	
+	try:
+		matches = Match.objects.user_matches(request.user)
+	except Exception:
+		pass
+
 	return render(request, 'profiles/all.html', locals())
 
 def single_user(request, username):
@@ -29,6 +32,7 @@ def single_user(request, username):
 		raise Http404
 	set_match, created = Match.objects.get_or_create(from_user=request.user, to_user=single_user)
 	set_match.percent = round(match_percentage(request.user, single_user), 4)
+	set_match.good_match = Match.objects.good_match(request.user, single_user)
 	set_match.save()
 
 	match = set_match.percent * 100
