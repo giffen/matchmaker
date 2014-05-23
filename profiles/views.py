@@ -30,10 +30,15 @@ def single_user(request, username):
 			single_user = user
 	except:
 		raise Http404
+
 	set_match, created = Match.objects.get_or_create(from_user=request.user, to_user=single_user)
+	
+	match_percentage(request.user,single_user)
+	
 	set_match.percent = round(match_percentage(request.user, single_user), 4)
 	set_match.good_match = Match.objects.good_match(request.user, single_user)
 	set_match.save()
+	
 
 	if set_match.good_match:
 		single_user_jobs = Job.objects.filter(user=single_user)

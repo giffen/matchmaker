@@ -20,7 +20,7 @@ def points(request_user, matched_user):
 					#print ans.answer
 					#print ans.answer.answer
 					points_awarded += ans.points
-
+	
 	percentage = points_awarded/Decimal(points_possible)
 	print "Out %s questions, %s points were awarded of %s points with a score of %s" %(total_questions, points_awarded, points_possible, percentage)
 
@@ -34,5 +34,5 @@ def match_percentage(usera, userb):
 		new_percent = Decimal(a_percent * b_percent)
 		n = Decimal(1.0/a_quests)
 		match_percent = new_percent ** n
-		#print match_percent
+		print match_percent
 		return match_percent
