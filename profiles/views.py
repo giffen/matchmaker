@@ -13,14 +13,16 @@ def home(request):
 	return render(request, 'home.html', locals())
 
 def all(request):
+	if request.user.is_authenticated():
+		users = User.objects.filter(is_active=True)
+		try:
+			matches = Match.objects.user_matches(request.user)
+		except Exception:
+			pass
+		return render(request, 'profiles/all.html', locals())
 
-	users = User.objects.filter(is_active=True)
-	try:
-		matches = Match.objects.user_matches(request.user)
-	except Exception:
-		pass
-
-	return render(request, 'profiles/all.html', locals())
+	else:
+		return render(request, 'home.html', locals())
 
 def single_user(request, username):
 	

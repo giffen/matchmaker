@@ -41,3 +41,16 @@ class UserPicture(models.Model):
 
 	def __unicode__(self):
 		return str(self.image)
+
+CHOICES = (
+	('Regular', 'Regular'),
+	('Staff', 'Staff'),
+	('Premium', 'Premium'),
+)
+
+class UserRole(models.Model):
+	user = models.OneToOneField(User)
+	role = models.CharField(max_length=120, default='Regular', choices=CHOICES)
+
+	def __unicode__(self):
+		return self.role
