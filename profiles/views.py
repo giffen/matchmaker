@@ -12,6 +12,17 @@ from .forms import AddressForm, JobForm, UserPictureForm
 def home(request):
 	return render(request, 'home.html', locals())
 
+def subscribe(request):
+	if request.user.is_authenticated():
+		# what subscription do they want
+		# assign choice after successful payment
+		# collect CC info here
+
+		return render(request, 'profiles/subscribe.html', locals())
+
+	else:
+		return render(request, 'home.html', locals())
+
 def all(request):
 	if request.user.is_authenticated():
 		users = User.objects.filter(is_active=True)
