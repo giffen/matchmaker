@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 
+from matchmaker.apis import secret_key
+
+import stripe
+stripe.api_key = secret_key
 
 class Address(models.Model):
 	user = models.ForeignKey(User)
@@ -54,3 +59,26 @@ class UserRole(models.Model):
 
 	def __unicode__(self):
 		return self.role
+
+
+class UserStripe(models.Model):
+	user = models.OneToOneField(User)
+	stripe_id = models.CharField(max_length=120, null=True, blank=True)
+
+	def __unicode__(self):
+		return self.user.username
+
+	def get_stripe_id(self):
+		return self.stripe_id
+
+def CreateStripeId(sender, user, request, **kwargs):
+	new_id, created = UserStripe.objects.get_or_create(user=user)
+	if created:
+		# add users email to stripe, then set the stripe ID.
+		stripe_cust = stripe.Customer.create(email = user.email, description="Customer for %s" %user.email)
+		new_id.stripe_id = stripe_cust.id 
+		new_id.save()
+	else:
+		print "Not Created"
+
+user_logged_in.connect(CreateStripeId)
