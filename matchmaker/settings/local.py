@@ -46,6 +46,8 @@ INSTALLED_APPS = (
 ACCOUNT_ACTIVATION_DAYS = 7
 LOGIN_REDIRECT_URL = '/'
 
+SUBSCRIPTION_REQUIRED_URLS = ['questions']
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'matchmaker.middleware.CheckMembership'
 )
 
 ROOT_URLCONF = 'matchmaker.urls'
