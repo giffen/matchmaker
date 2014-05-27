@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'profiles',
     'questions',
     'matches',
+    'directmessages',
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7
