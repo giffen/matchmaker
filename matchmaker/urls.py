@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     (r'^edit/locations$', 'profiles.views.edit_locations'),
     url(r'^subscribe/$', 'profiles.views.subscribe', name='subscribe'),
     url(r'^questions/$', 'questions.views.all_questions', name='questions'),
+    url(r'^inbox/$', 'directmessages.views.inbox', name='inbox'),
+    url(r'^sent/$', 'directmessages.views.sent', name='sent'),
 
 )
 
