@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
+from django.core.urlresolvers import reverse
 
 class DirectMessage(models.Model):
 	subject = models.CharField(max_length=150)
@@ -12,6 +13,10 @@ class DirectMessage(models.Model):
 
 	def __unicode__(self):
 		return self.subject
+
+	def get_absolute_url(self):
+		return (reverse('view_direct_message', kwargs={'dm_id': self.id}))
+
 
 def set_messages_in_session(sender, user, request, **kwargs):
 	direct_messages = DirectMessage.objects.filter(receiver = user)
