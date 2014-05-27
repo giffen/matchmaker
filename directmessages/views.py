@@ -15,7 +15,8 @@ def view_direct_message(request, dm_id):
 		raise Http404
 
 	if not message.read:
-		message.read = datetime.datetime.now()
+		message.read = True
+		message.read_at = datetime.datetime.now()
 		message.save()
 
 	return render(request, 'directmessages/view.html', locals())
