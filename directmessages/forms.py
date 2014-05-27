@@ -9,3 +9,11 @@ class ComposeForm(forms.ModelForm):
 		widgets = {
 			'body': forms.Textarea(attrs={'cols':80, 'rows': 10}),
 		}
+
+class ReplyForm(forms.ModelForm):
+	class Meta:
+		model = DirectMessage
+		fields = ['body']
+		widgets = {
+			'body': forms.Textarea(attrs={'cols':80, 'rows': 10}),
+		}

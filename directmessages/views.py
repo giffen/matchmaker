@@ -1,10 +1,12 @@
 import datetime
+
+from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.shortcuts import render, Http404, get_object_or_404
 from django.contrib.auth.models import User
+from django.shortcuts import render, Http404, get_object_or_404, HttpResponseRedirect
 
 from .models import DirectMessage
-from .forms import ComposeForm
+from .forms import ComposeForm, ReplyForm
 
 def view_direct_message(request, dm_id):
 	message = get_object_or_404(DirectMessage, id=dm_id)
@@ -21,7 +23,8 @@ def view_direct_message(request, dm_id):
 
 def compose(request):
 	if request.user.is_authenticated():
-		
+		title = "<h1>Compose Message</h1>"
+
 		form = ComposeForm(request.POST or None)
 
 		if form.is_valid():
@@ -29,6 +32,8 @@ def compose(request):
 			send_message.sender = request.user
 			send_message.sent = datetime.datetime.now()
 			send_message.save()
+			messages.success(request, "Message sent")
+			return HttpResponseRedirect(reverse('inbox'))
 
 		return render(request, 'directmessages/compose.html', locals())
 
@@ -41,7 +46,9 @@ def reply(request, dm_id):
 		parent_id = dm_id
 		parent = get_object_or_404(DirectMessage, id=parent_id)
 
-		form = ComposeForm(request.POST or None)
+		title = "<h1>Reply <small>%s from %s</small></h1>" %(parent.subject, parent.sender)
+
+		form = ReplyForm(request.POST or None)
 
 		if form.is_valid():
 			send_message = form.save(commit=False)
@@ -51,6 +58,9 @@ def reply(request, dm_id):
 			send_message.sent = datetime.datetime.now()
 			send_message.parent = parent
 			send_message.save()
+			messages.success(request, "Reply sent")
+			path = reverse('view_direct_message', args=dm_id)
+			return HttpResponseRedirect(path)
 
 			parent.replied = True
 			parent.save()
