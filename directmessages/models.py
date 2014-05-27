@@ -10,6 +10,8 @@ class DirectMessage(models.Model):
 	receiver = models.ForeignKey(User, related_name='received_direct_messages', null=True, blank=True)
 	sent = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
 	read = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+	parent = models.ForeignKey('self', related_name='parent_message', null=True, blank=True)
+	replied = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.subject
