@@ -1,6 +1,6 @@
 from django.db import models
-
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 
 class DirectMessage(models.Model):
 	subject = models.CharField(max_length=150)
@@ -12,3 +12,9 @@ class DirectMessage(models.Model):
 
 	def __unicode__(self):
 		return self.subject
+
+def set_messages_in_session(sender, user, request, **kwargs):
+	direct_messages = DirectMessage.objects.filter(receiver = user)
+	request.session['num_of_messages'] = len(direct_messages)
+
+user_logged_in.connect(set_messages_in_session)
