@@ -1,4 +1,5 @@
 import stripe
+import datetime
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -70,14 +71,19 @@ def single_user(request, username):
 	except:
 		raise Http404
 
-	set_match, created = Match.objects.get_or_create(from_user=request.user, to_user=single_user)
-	
-	match_percentage(request.user,single_user)
-	
+	set_match, created = Match.objects.get_or_create(from_user=request.user, to_user=single_user)	
 	set_match.percent = round(match_percentage(request.user, single_user), 4)
 	set_match.good_match = Match.objects.good_match(request.user, single_user)
 	set_match.save()
 	
+	try:
+		viewed = MatchList.objects.get(user=request.user, match=single_user)
+		viewed.read = True
+		if viewed.read_at is None:
+			viewed.read_at = datetime.datetime.now()
+		viewed.save()
+	except:
+		pass	
 
 	if set_match.good_match:
 		single_user_jobs = Job.objects.filter(user=single_user)

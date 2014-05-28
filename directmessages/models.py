@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 
 class DirectMessageManager(models.Manager):
 	def get_num_unread_messages(self, user):
-		return super(DirectMessageManager, self).filter(read=False).filter(receiver=user).count
+		return super(DirectMessageManager, self).filter(receiver=user).filter(read=False).count()
 
 
 class DirectMessage(models.Model):

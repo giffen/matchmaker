@@ -30,7 +30,7 @@ def login_user_matches(sender, user, request, **kwargs):
 				if Match.objects.good_match(x.from_user, user):
 					add_to_list, created = MatchList.objects.get_or_create(user=user, match=x.from_user)
 
-		request.session['new_matches_count'] = MatchList.objects.filter(user=user).filter(read=False)
+		request.session['new_matches_count'] = MatchList.objects.filter(user=user).filter(read=False).count()
 
 user_logged_in.connect(login_user_matches)
 
