@@ -17,8 +17,6 @@ urlpatterns = patterns('',
     (r'^edit/locations$', 'profiles.views.edit_locations'),
     url(r'^subscribe/$', 'profiles.views.subscribe', name='subscribe'),
     url(r'^questions/$', 'questions.views.all_questions', name='questions'),
-    
-
 )
 
 if settings.DEBUG:

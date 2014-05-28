@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Match, JobMatch
+from .models import Match, JobMatch, MatchList
 
 class MatchAdmin(admin.ModelAdmin):
 	list_display = ['from_user','to_user','percent']
@@ -15,3 +15,9 @@ class JobMatchAdmin(admin.ModelAdmin):
 		model = JobMatch
 
 admin.site.register(JobMatch, JobMatchAdmin)
+
+class MatchListAdmin(admin.ModelAdmin):
+	class Meta:
+		model = MatchList
+
+admin.site.register(MatchList, MatchListAdmin)

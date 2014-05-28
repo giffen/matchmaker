@@ -13,8 +13,3 @@ class CheckMembership():
 				if str(role) != "Premium":
 					messages.success(request, 'You need to upgrade your membership to see that')	
 					return HttpResponseRedirect('/')
-			else:
-				pass
-				
-		else:
-			pass

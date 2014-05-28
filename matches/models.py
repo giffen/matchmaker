@@ -1,25 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 
 from profiles.models import Job
 
-class MatchManager(models.Manager):
-	def user_matches(self, user):
-		matches = []
-		if self.filter(from_user=user).count() > 0:
-			obj = Match.objects.filter(from_user=user)
-			for x in obj:
-				if x.to_user != user:
-					if Match.objects.good_match(abc.to_user, user):
-						matches.append(x.to_user)
-		if self.filter(to_user=user).count() > 0:
-			obj = Match.objects.filter(to_user=user)
-			for x in obj:
-				if x.from_user != user:
-					if Match.objects.good_match(abc.from_user, user):
-						matches.append(x.from_user)
-		return matches
+class MatchList(models.Model):
+	user = models.ForeignKey(User, related_name='main_user')
+	match = models.ForeignKey(User, related_name='matched_user')
+	read = models.BooleanField(default=False)
+	read_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
+	def __unicode__(self):
+		return str(self.user.username)
+
+	class Meta:
+		ordering = ['-updated','-timestamp']
+
+def login_user_matches(sender, user, request, **kwargs):	
+		obj = Match.objects.filter(from_user=user)
+		for x in obj:
+			if x.to_user != user:
+				if Match.objects.good_match(x.to_user, user):
+					add_to_list, created = MatchList.objects.get_or_create(user=user, match=x.to_user)
+		obj2 = Match.objects.filter(to_user=user)
+		for x in obj2:
+			if x.from_user != user:
+				if Match.objects.good_match(x.from_user, user):
+					add_to_list, created = MatchList.objects.get_or_create(user=user, match=x.from_user)
+
+		request.session['new_matches_count'] = MatchList.objects.filter(user=user).filter(read=False)
+
+user_logged_in.connect(login_user_matches)
+
+
+class MatchManager(models.Manager):
 	def are_matched(self, user1, user2):
 		if self.filter(from_user=user1, to_user=user2).count() > 0:
 			obj = Match.objects.get(from_user=user1, to_user=user2)

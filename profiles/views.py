@@ -8,7 +8,7 @@ from django.shortcuts import render, Http404, HttpResponseRedirect
 from matchmaker.apis import pub_key, secret_key
 
 from questions.matching import points, match_percentage
-from matches.models import Match, JobMatch
+from matches.models import Match, JobMatch, MatchList
 from .models import Address, Job, UserPicture 
 from .forms import AddressForm, JobForm, UserPictureForm
 
@@ -52,7 +52,8 @@ def all(request):
 	if request.user.is_authenticated():
 		users = User.objects.filter(is_active=True)
 		try:
-			matches = Match.objects.user_matches(request.user)
+			#matches = Match.objects.user_matches(request.user)
+			matches = MatchList.objects.filter(user=request.user)
 		except Exception:
 			pass
 		return render(request, 'profiles/all.html', locals())
