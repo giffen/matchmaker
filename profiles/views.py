@@ -1,23 +1,40 @@
+import stripe
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.forms.models import modelformset_factory
 from django.shortcuts import render, Http404, HttpResponseRedirect
+
+from matchmaker.apis import pub_key, secret_key
 
 from questions.matching import points, match_percentage
 from matches.models import Match, JobMatch
 from .models import Address, Job, UserPicture 
 from .forms import AddressForm, JobForm, UserPictureForm
 
+stripe.api_key = secret_key
 
 def home(request):
 	return render(request, 'home.html', locals())
 
 def subscribe(request):
+	
+	stripe_pub_key = pub_key
+	
 	if request.user.is_authenticated():
 		# what subscription do they want
 		# assign choice after successful payment
 		# collect CC info here
-
+		if request.method == 'POST':
+			membership = request.POST['membership']
+			token = request.POST['stripeToken']
+			customer = stripe.Customer.create(
+			  description="Customer for %s" %request.user.email,
+			  card=token # obtained with Stripe.js
+			)
+			customer.subscriptions.create(plan=membership)
+			customer.save()
+		
 		return render(request, 'profiles/subscribe.html', locals())
 
 	else:
