@@ -17,26 +17,34 @@ stripe.api_key = secret_key
 def home(request):
 	return render(request, 'home.html', locals())
 
+def get_stripe_customer(user):
+	try:
+		stripe_id = user.userstripe.stripe_id
+	except:
+		stripe_id = False
+
+	if stripe_id:
+		customer = stripe.Customer.retrieve(stripe_id)
+		return customer
+	else:
+		pass
+
 def subscribe(request):
-	
-	stripe_pub_key = pub_key
-	
 	if request.user.is_authenticated():
 		# what subscription do they want
 		# assign choice after successful payment
 		# collect CC info here
+		stripe_pub_key = pub_key
+		customer = get_stripe_customer(request.user)
+		
 		if request.method == 'POST':
 			membership = request.POST['membership']
 			token = request.POST['stripeToken']
-			customer = stripe.Customer.create(
-			  description="Customer for %s" %request.user.email,
-			  card=token # obtained with Stripe.js
-			)
+			customer.cards.create(card=token)
 			customer.subscriptions.create(plan=membership)
 			customer.save()
-		
-		return render(request, 'profiles/subscribe.html', locals())
 
+		return render(request, 'profiles/subscribe.html', locals())
 	else:
 		return render(request, 'home.html', locals())
 
